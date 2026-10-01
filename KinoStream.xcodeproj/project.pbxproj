@@ -1,0 +1,168 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* KinoStreamApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* KinoStreamApp.swift */; };
+		A10000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* AppModel.swift */; };
+		A10000000000000000000003 /* TorrServerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* TorrServerClient.swift */; };
+		A10000000000000000000004 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* KeychainStore.swift */; };
+		A10000000000000000000005 /* TorrentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* TorrentModels.swift */; };
+		A10000000000000000000006 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* RootView.swift */; };
+		A10000000000000000000007 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* HomeView.swift */; };
+		A10000000000000000000008 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* SearchView.swift */; };
+		A10000000000000000000009 /* TorrentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* TorrentsView.swift */; };
+		A1000000000000000000000A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* SettingsView.swift */; };
+		A1000000000000000000000B /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000B /* Components.swift */; };
+		A1000000000000000000000C /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000C /* PlayerView.swift */; };
+		A1000000000000000000000D /* AddTorrentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000D /* AddTorrentView.swift */; };
+		A1000000000000000000000E /* TorrServerDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000011 /* TorrServerDTOs.swift */; };
+		A1000000000000000000000F /* CatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* CatalogModels.swift */; };
+		A10000000000000000000010 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* CatalogView.swift */; };
+		A10000000000000000000011 /* MediaDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* MediaDetailView.swift */; };
+		A10000000000000000000012 /* MediaCatalogClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000015 /* MediaCatalogClient.swift */; };
+		A10000000000000000000013 /* JacRedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* JacRedClient.swift */; };
+		A10000000000000000000014 /* EpisodePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* EpisodePickerView.swift */; };
+		A10000000000000000000015 /* CinemetaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000018 /* CinemetaClient.swift */; };
+		A10000000000000000000016 /* KinopoiskClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000019 /* KinopoiskClient.swift */; };
+		A10000000000000000000017 /* SupabaseLibrarySync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001A /* SupabaseLibrarySync.swift */; };
+		A10000000000000000000018 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A20000000000000000000002 /* Supabase */; };
+		A10000000000000000000019 /* .env in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001B /* .env */; };
+		A1000000000000000000001A /* AuthGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001C /* AuthGateView.swift */; };
+		A1000000000000000000001B /* TorrServerProcessController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001D /* TorrServerProcessController.swift */; };
+		A1000000000000000000001C /* TorrServer in Embed TorrServer */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001E /* TorrServer */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A1000000000000000000001D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001F /* TorrServer LICENSE */; };
+		A1000000000000000000001E /* default-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000020 /* default-settings.json */; };
+		A1000000000000000000001F /* VLCPlaybackMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000021 /* VLCPlaybackMonitor.swift */; };
+		37B3D344B1614C46AA9245DB /* LibrarySyncEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73B817B8CF9E4568AF9CED41 /* LibrarySyncEntry.swift */; };
+		5E56665AD4A44331A68F8CF8 /* PlaybackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E52967C7CAC4B8DB4CB1C59 /* PlaybackController.swift */; };
+		BD7F72775D464513B28BEBF6 /* TorrentSearchFilters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB74C80FEB54506800F27D2 /* TorrentSearchFilters.swift */; };
+		4E71DFC418514EF9BDE3A906 /* TorrentFiltersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B91F9974A1A44F86B7D28939 /* TorrentFiltersView.swift */; };
+		2FB24B8524E94D09BDBC328D /* NextEpisodeCountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65EE71078774F179CC7C30B /* NextEpisodeCountdownView.swift */; };
+		7F48611CDD044A5BA34F4A72 /* TorrentAssociationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB591F5DA30D4801B673CDAF /* TorrentAssociationView.swift */; };
+		2064D5EE897C4B33917DB373 /* PlaybackLoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA487452D524D58AF901805 /* PlaybackLoadingState.swift */; };
+		EA6D8FAAD7B8400BB15B0152 /* PlaybackLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C67C5F44474627B148D9E3 /* PlaybackLoadingView.swift */; };
+		1B10550AEFCD4F188605FD99 /* CatalogDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8D0B5C086C4A50A4B95311 /* CatalogDiscovery.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B10000000000000000000001 /* KinoStreamApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStreamApp.swift; sourceTree = "<group>"; };
+		B10000000000000000000002 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		B10000000000000000000003 /* TorrServerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrServerClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000004 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000005 /* TorrentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentModels.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		B10000000000000000000007 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		B10000000000000000000008 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		B10000000000000000000009 /* TorrentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrentsView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000B /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
+		B1000000000000000000000C /* PlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000D /* AddTorrentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTorrentView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1000000000000000000000F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B10000000000000000000010 /* KinoStream.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KinoStream.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000011 /* TorrServerDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrServerDTOs.swift; sourceTree = "<group>"; };
+		B10000000000000000000012 /* CatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogModels.swift; sourceTree = "<group>"; };
+		B10000000000000000000013 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* MediaDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaDetailView.swift; sourceTree = "<group>"; };
+		B10000000000000000000015 /* MediaCatalogClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCatalogClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000016 /* JacRedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JacRedClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000017 /* EpisodePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodePickerView.swift; sourceTree = "<group>"; };
+		B10000000000000000000018 /* CinemetaClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CinemetaClient.swift; sourceTree = "<group>"; };
+		B10000000000000000000019 /* KinopoiskClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinopoiskClient.swift; sourceTree = "<group>"; };
+		B1000000000000000000001A /* SupabaseLibrarySync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseLibrarySync.swift; sourceTree = "<group>"; };
+		B1000000000000000000001B /* .env */ = {isa = PBXFileReference; lastKnownFileType = text; path = .env; sourceTree = SOURCE_ROOT; };
+		B1000000000000000000001C /* AuthGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthGateView.swift; sourceTree = "<group>"; };
+		B1000000000000000000001D /* TorrServerProcessController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorrServerProcessController.swift; sourceTree = "<group>"; };
+		B1000000000000000000001E /* TorrServer */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = TorrServer; sourceTree = "<group>"; };
+		B1000000000000000000001F /* TorrServer LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		B10000000000000000000020 /* default-settings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "default-settings.json"; sourceTree = "<group>"; };
+		B10000000000000000000021 /* VLCPlaybackMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLCPlaybackMonitor.swift; sourceTree = "<group>"; };
+		73B817B8CF9E4568AF9CED41 /* LibrarySyncEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Persistence/LibrarySyncEntry.swift; sourceTree = SOURCE_ROOT; };
+		7E52967C7CAC4B8DB4CB1C59 /* PlaybackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Playback/PlaybackController.swift; sourceTree = SOURCE_ROOT; };
+		4AB74C80FEB54506800F27D2 /* TorrentSearchFilters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Search/TorrentSearchFilters.swift; sourceTree = SOURCE_ROOT; };
+		B91F9974A1A44F86B7D28939 /* TorrentFiltersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Features/Search/TorrentFiltersView.swift; sourceTree = SOURCE_ROOT; };
+		C65EE71078774F179CC7C30B /* NextEpisodeCountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Features/Playback/NextEpisodeCountdownView.swift; sourceTree = SOURCE_ROOT; };
+		FB591F5DA30D4801B673CDAF /* TorrentAssociationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Features/Library/TorrentAssociationView.swift; sourceTree = SOURCE_ROOT; };
+		4DA487452D524D58AF901805 /* PlaybackLoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Playback/PlaybackLoadingState.swift; sourceTree = SOURCE_ROOT; };
+		87C67C5F44474627B148D9E3 /* PlaybackLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Features/Playback/PlaybackLoadingView.swift; sourceTree = SOURCE_ROOT; };
+		5A8D0B5C086C4A50A4B95311 /* CatalogDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Catalog/CatalogDiscovery.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		C10000000000000000000001 = {isa = PBXGroup; children = (C10000000000000000000002 /* KinoStream */, B1000000000000000000000F /* README.md */, B1000000000000000000001B /* .env */, C10000000000000000000003 /* Products */, ); sourceTree = "<group>"; };
+		C10000000000000000000002 /* KinoStream */ = {isa = PBXGroup; path = KinoStream; sourceTree = "<group>"; children = (B1000000000000000000000E /* Info.plist */, C10000000000000000000004 /* App */, C10000000000000000000005 /* Core */, C10000000000000000000006 /* DesignSystem */, C10000000000000000000007 /* Features */, C10000000000000000000013 /* TorrServer Vendor */, ); };
+		C10000000000000000000003 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (B10000000000000000000010 /* KinoStream.app */, ); };
+		C10000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B10000000000000000000001 /* KinoStreamApp.swift */, B10000000000000000000002 /* AppModel.swift */, B10000000000000000000006 /* RootView.swift */, ); };
+		C10000000000000000000005 /* Core */ = {isa = PBXGroup; path = Core; sourceTree = "<group>"; children = (C10000000000000000000008 /* Domain */, C10000000000000000000009 /* Persistence */, C1000000000000000000000A /* TorrServer */, C10000000000000000000011 /* Catalog API */, C10000000000000000000012 /* Search API */, C10000000000000000000014 /* Playback */, ); };
+		C10000000000000000000006 /* DesignSystem */ = {isa = PBXGroup; path = DesignSystem; sourceTree = "<group>"; children = (B1000000000000000000000B /* Components.swift */, ); };
+		C10000000000000000000007 /* Features */ = {isa = PBXGroup; path = Features; sourceTree = "<group>"; children = (C1000000000000000000000B /* Home */, C10000000000000000000010 /* Catalog */, C1000000000000000000000C /* Search */, C1000000000000000000000D /* Library */, C1000000000000000000000E /* Playback */, C1000000000000000000000F /* Settings */, ); };
+		C10000000000000000000008 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B10000000000000000000005 /* TorrentModels.swift */, ); };
+		C10000000000000000000009 /* Persistence */ = {isa = PBXGroup; path = Persistence; sourceTree = "<group>"; children = (73B817B8CF9E4568AF9CED41 /* LibrarySyncEntry.swift */, B10000000000000000000004 /* KeychainStore.swift */, B1000000000000000000001A /* SupabaseLibrarySync.swift */, ); };
+		C1000000000000000000000A /* TorrServer */ = {isa = PBXGroup; path = TorrServer; sourceTree = "<group>"; children = (B10000000000000000000003 /* TorrServerClient.swift */, B10000000000000000000011 /* TorrServerDTOs.swift */, B1000000000000000000001D /* TorrServerProcessController.swift */, ); };
+		C1000000000000000000000B /* Home */ = {isa = PBXGroup; path = Home; sourceTree = "<group>"; children = (B10000000000000000000007 /* HomeView.swift */, ); };
+		C1000000000000000000000C /* Search */ = {isa = PBXGroup; path = Search; sourceTree = "<group>"; children = (B91F9974A1A44F86B7D28939 /* TorrentFiltersView.swift */, B10000000000000000000008 /* SearchView.swift */, B10000000000000000000017 /* EpisodePickerView.swift */, ); };
+		C1000000000000000000000D /* Library */ = {isa = PBXGroup; path = Library; sourceTree = "<group>"; children = (FB591F5DA30D4801B673CDAF /* TorrentAssociationView.swift */, B10000000000000000000009 /* TorrentsView.swift */, B1000000000000000000000D /* AddTorrentView.swift */, ); };
+		C1000000000000000000000E /* Playback */ = {isa = PBXGroup; path = Playback; sourceTree = "<group>"; children = (87C67C5F44474627B148D9E3 /* PlaybackLoadingView.swift */, C65EE71078774F179CC7C30B /* NextEpisodeCountdownView.swift */, B1000000000000000000000C /* PlayerView.swift */, ); };
+		C1000000000000000000000F /* Settings */ = {isa = PBXGroup; path = Settings; sourceTree = "<group>"; children = (B1000000000000000000000A /* SettingsView.swift */, B1000000000000000000001C /* AuthGateView.swift */, ); };
+		C10000000000000000000010 /* Catalog */ = {isa = PBXGroup; path = Catalog; sourceTree = "<group>"; children = (B10000000000000000000012 /* CatalogModels.swift */, B10000000000000000000013 /* CatalogView.swift */, B10000000000000000000014 /* MediaDetailView.swift */, ); };
+		C10000000000000000000011 /* Catalog API */ = {isa = PBXGroup; path = Catalog; sourceTree = "<group>"; children = (5A8D0B5C086C4A50A4B95311 /* CatalogDiscovery.swift */, B10000000000000000000015 /* MediaCatalogClient.swift */, B10000000000000000000018 /* CinemetaClient.swift */, B10000000000000000000019 /* KinopoiskClient.swift */, ); };
+		C10000000000000000000012 /* Search API */ = {isa = PBXGroup; path = Search; sourceTree = "<group>"; children = (4AB74C80FEB54506800F27D2 /* TorrentSearchFilters.swift */, B10000000000000000000016 /* JacRedClient.swift */, ); };
+		C10000000000000000000013 /* TorrServer Vendor */ = {isa = PBXGroup; path = "Vendor/TorrServer"; sourceTree = "<group>"; children = (B1000000000000000000001E /* TorrServer */, B1000000000000000000001F /* TorrServer LICENSE */, B10000000000000000000020 /* default-settings.json */, ); };
+		C10000000000000000000014 /* Playback */ = {isa = PBXGroup; path = Playback; sourceTree = "<group>"; children = (4DA487452D524D58AF901805 /* PlaybackLoadingState.swift */, 7E52967C7CAC4B8DB4CB1C59 /* PlaybackController.swift */, B10000000000000000000021 /* VLCPlaybackMonitor.swift */, ); };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D10000000000000000000001 /* KinoStream */ = {isa = PBXNativeTarget; buildConfigurationList = E10000000000000000000002 /* Build configuration list for PBXNativeTarget "KinoStream" */; buildPhases = (F10000000000000000000001 /* Sources */, F10000000000000000000002 /* Frameworks */, F10000000000000000000003 /* Resources */, F10000000000000000000004 /* Embed TorrServer */, ); buildRules = (); dependencies = (); name = KinoStream; packageProductDependencies = (A20000000000000000000002 /* Supabase */, ); productName = KinoStream; productReference = B10000000000000000000010 /* KinoStream.app */; productType = "com.apple.product-type.application"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D10000000000000000000002 /* Project object */ = {isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = 1; LastUpgradeCheck = 1600; }; buildConfigurationList = E10000000000000000000001 /* Build configuration list for PBXProject "KinoStream" */; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base, ); mainGroup = C10000000000000000000001; packageReferences = (A20000000000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */, ); productRefGroup = C10000000000000000000003 /* Products */; projectDirPath = ""; projectRoot = ""; targets = (D10000000000000000000001 /* KinoStream */, ); };
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F10000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
+				1B10550AEFCD4F188605FD99 /* CatalogDiscovery.swift in Sources */,
+				EA6D8FAAD7B8400BB15B0152 /* PlaybackLoadingView.swift in Sources */,
+				2064D5EE897C4B33917DB373 /* PlaybackLoadingState.swift in Sources */,
+				7F48611CDD044A5BA34F4A72 /* TorrentAssociationView.swift in Sources */,
+				2FB24B8524E94D09BDBC328D /* NextEpisodeCountdownView.swift in Sources */,
+				4E71DFC418514EF9BDE3A906 /* TorrentFiltersView.swift in Sources */,
+				BD7F72775D464513B28BEBF6 /* TorrentSearchFilters.swift in Sources */,5E56665AD4A44331A68F8CF8 /* PlaybackController.swift in Sources */, 37B3D344B1614C46AA9245DB /* LibrarySyncEntry.swift in Sources */, A10000000000000000000001 /* KinoStreamApp.swift in Sources */, A10000000000000000000002 /* AppModel.swift in Sources */, A10000000000000000000003 /* TorrServerClient.swift in Sources */, A10000000000000000000004 /* KeychainStore.swift in Sources */, A10000000000000000000005 /* TorrentModels.swift in Sources */, A10000000000000000000006 /* RootView.swift in Sources */, A10000000000000000000007 /* HomeView.swift in Sources */, A10000000000000000000008 /* SearchView.swift in Sources */, A10000000000000000000009 /* TorrentsView.swift in Sources */, A1000000000000000000000A /* SettingsView.swift in Sources */, A1000000000000000000000B /* Components.swift in Sources */, A1000000000000000000000C /* PlayerView.swift in Sources */, A1000000000000000000000D /* AddTorrentView.swift in Sources */, A1000000000000000000000E /* TorrServerDTOs.swift in Sources */, A1000000000000000000000F /* CatalogModels.swift in Sources */, A10000000000000000000010 /* CatalogView.swift in Sources */, A10000000000000000000011 /* MediaDetailView.swift in Sources */, A10000000000000000000012 /* MediaCatalogClient.swift in Sources */, A10000000000000000000013 /* JacRedClient.swift in Sources */, A10000000000000000000014 /* EpisodePickerView.swift in Sources */, A10000000000000000000015 /* CinemetaClient.swift in Sources */, A10000000000000000000016 /* KinopoiskClient.swift in Sources */, A10000000000000000000017 /* SupabaseLibrarySync.swift in Sources */, A1000000000000000000001A /* AuthGateView.swift in Sources */, A1000000000000000000001B /* TorrServerProcessController.swift in Sources */, A1000000000000000000001F /* VLCPlaybackMonitor.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F10000000000000000000002 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000018 /* Supabase in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F10000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000019 /* .env in Resources */, A1000000000000000000001D /* LICENSE in Resources */, A1000000000000000000001E /* default-settings.json in Resources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		F10000000000000000000004 /* Embed TorrServer */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 6; files = (A1000000000000000000001C /* TorrServer in Embed TorrServer */, ); name = "Embed TorrServer"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E10000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; ENABLE_PREVIEWS = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; }; name = Debug; };
+		E10000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; }; name = Release; };
+		E10000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
+		E10000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_VERSION = 1.0; MARKETING_VERSION = 0.1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E10000000000000000000001 /* Build configuration list for PBXProject "KinoStream" */ = {isa = XCConfigurationList; buildConfigurations = (E10000000000000000000003 /* Debug */, E10000000000000000000004 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		E10000000000000000000002 /* Build configuration list for PBXNativeTarget "KinoStream" */ = {isa = XCConfigurationList; buildConfigurations = (E10000000000000000000005 /* Debug */, E10000000000000000000006 /* Release */, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A20000000000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/supabase/supabase-swift.git"; requirement = {kind = upToNextMajorVersion; minimumVersion = 2.55.2; }; };
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A20000000000000000000002 /* Supabase */ = {isa = XCSwiftPackageProductDependency; package = A20000000000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */; productName = Supabase; };
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = D10000000000000000000002 /* Project object */;
+}

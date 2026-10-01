@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.DS_Store
+DerivedData/
+.build/
+dist/
+**/xcuserdata/
+*.xcuserstate
+supabase/.temp/
+supabase/.branches/
