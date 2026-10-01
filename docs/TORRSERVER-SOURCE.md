@@ -1,6 +1,6 @@
 # Исходники встроенного TorrServer
 
-KinoStream 0.1.0 включает неизменённый официальный исполняемый файл `TorrServer-darwin-arm64` из TorrServer MatriX.145. При упаковке добавляется только локальная подпись macOS.
+KinoStream 0.1.x включает неизменённый официальный исполняемый файл `TorrServer-darwin-arm64` из TorrServer MatriX.145. При упаковке добавляется только локальная подпись macOS.
 
 - Проект: https://github.com/YouROK/TorrServer
 - Версия: https://github.com/YouROK/TorrServer/releases/tag/MatriX.145

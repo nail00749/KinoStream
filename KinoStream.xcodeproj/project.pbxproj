@@ -46,6 +46,9 @@
 		2064D5EE897C4B33917DB373 /* PlaybackLoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA487452D524D58AF901805 /* PlaybackLoadingState.swift */; };
 		EA6D8FAAD7B8400BB15B0152 /* PlaybackLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C67C5F44474627B148D9E3 /* PlaybackLoadingView.swift */; };
 		1B10550AEFCD4F188605FD99 /* CatalogDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A8D0B5C086C4A50A4B95311 /* CatalogDiscovery.swift */; };
+		CEFC7529951648849CA0C270 /* SupabaseAuthCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1198F013644C4DD5A873AFC6 /* SupabaseAuthCallback.swift */; };
+		9FAE6ECCF0E2483EA97D0402 /* PasswordManagerSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B6C0E8C17D4FD58F28D491 /* PasswordManagerSupport.swift */; };
+		4AF27959553843638CE9824A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA99B77405674E09ABFAE5CD /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,18 +94,21 @@
 		4DA487452D524D58AF901805 /* PlaybackLoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Playback/PlaybackLoadingState.swift; sourceTree = SOURCE_ROOT; };
 		87C67C5F44474627B148D9E3 /* PlaybackLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Features/Playback/PlaybackLoadingView.swift; sourceTree = SOURCE_ROOT; };
 		5A8D0B5C086C4A50A4B95311 /* CatalogDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KinoStream/Core/Catalog/CatalogDiscovery.swift; sourceTree = SOURCE_ROOT; };
+		1198F013644C4DD5A873AFC6 /* SupabaseAuthCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAuthCallback.swift; sourceTree = "<group>"; };
+		C5B6C0E8C17D4FD58F28D491 /* PasswordManagerSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordManagerSupport.swift; sourceTree = "<group>"; };
+		BA99B77405674E09ABFAE5CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		C10000000000000000000001 = {isa = PBXGroup; children = (C10000000000000000000002 /* KinoStream */, B1000000000000000000000F /* README.md */, B1000000000000000000001B /* .env */, C10000000000000000000003 /* Products */, ); sourceTree = "<group>"; };
-		C10000000000000000000002 /* KinoStream */ = {isa = PBXGroup; path = KinoStream; sourceTree = "<group>"; children = (B1000000000000000000000E /* Info.plist */, C10000000000000000000004 /* App */, C10000000000000000000005 /* Core */, C10000000000000000000006 /* DesignSystem */, C10000000000000000000007 /* Features */, C10000000000000000000013 /* TorrServer Vendor */, ); };
+		C10000000000000000000002 /* KinoStream */ = {isa = PBXGroup; path = KinoStream; sourceTree = "<group>"; children = (BA99B77405674E09ABFAE5CD /* Assets.xcassets */, B1000000000000000000000E /* Info.plist */, C10000000000000000000004 /* App */, C10000000000000000000005 /* Core */, C10000000000000000000006 /* DesignSystem */, C10000000000000000000007 /* Features */, C10000000000000000000013 /* TorrServer Vendor */, ); };
 		C10000000000000000000003 /* Products */ = {isa = PBXGroup; name = Products; sourceTree = "<group>"; children = (B10000000000000000000010 /* KinoStream.app */, ); };
 		C10000000000000000000004 /* App */ = {isa = PBXGroup; path = App; sourceTree = "<group>"; children = (B10000000000000000000001 /* KinoStreamApp.swift */, B10000000000000000000002 /* AppModel.swift */, B10000000000000000000006 /* RootView.swift */, ); };
 		C10000000000000000000005 /* Core */ = {isa = PBXGroup; path = Core; sourceTree = "<group>"; children = (C10000000000000000000008 /* Domain */, C10000000000000000000009 /* Persistence */, C1000000000000000000000A /* TorrServer */, C10000000000000000000011 /* Catalog API */, C10000000000000000000012 /* Search API */, C10000000000000000000014 /* Playback */, ); };
 		C10000000000000000000006 /* DesignSystem */ = {isa = PBXGroup; path = DesignSystem; sourceTree = "<group>"; children = (B1000000000000000000000B /* Components.swift */, ); };
 		C10000000000000000000007 /* Features */ = {isa = PBXGroup; path = Features; sourceTree = "<group>"; children = (C1000000000000000000000B /* Home */, C10000000000000000000010 /* Catalog */, C1000000000000000000000C /* Search */, C1000000000000000000000D /* Library */, C1000000000000000000000E /* Playback */, C1000000000000000000000F /* Settings */, ); };
-		C10000000000000000000008 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (B10000000000000000000005 /* TorrentModels.swift */, ); };
-		C10000000000000000000009 /* Persistence */ = {isa = PBXGroup; path = Persistence; sourceTree = "<group>"; children = (73B817B8CF9E4568AF9CED41 /* LibrarySyncEntry.swift */, B10000000000000000000004 /* KeychainStore.swift */, B1000000000000000000001A /* SupabaseLibrarySync.swift */, ); };
+		C10000000000000000000008 /* Domain */ = {isa = PBXGroup; path = Domain; sourceTree = "<group>"; children = (1198F013644C4DD5A873AFC6 /* SupabaseAuthCallback.swift */, B10000000000000000000005 /* TorrentModels.swift */, ); };
+		C10000000000000000000009 /* Persistence */ = {isa = PBXGroup; path = Persistence; sourceTree = "<group>"; children = (C5B6C0E8C17D4FD58F28D491 /* PasswordManagerSupport.swift */, 73B817B8CF9E4568AF9CED41 /* LibrarySyncEntry.swift */, B10000000000000000000004 /* KeychainStore.swift */, B1000000000000000000001A /* SupabaseLibrarySync.swift */, ); };
 		C1000000000000000000000A /* TorrServer */ = {isa = PBXGroup; path = TorrServer; sourceTree = "<group>"; children = (B10000000000000000000003 /* TorrServerClient.swift */, B10000000000000000000011 /* TorrServerDTOs.swift */, B1000000000000000000001D /* TorrServerProcessController.swift */, ); };
 		C1000000000000000000000B /* Home */ = {isa = PBXGroup; path = Home; sourceTree = "<group>"; children = (B10000000000000000000007 /* HomeView.swift */, ); };
 		C1000000000000000000000C /* Search */ = {isa = PBXGroup; path = Search; sourceTree = "<group>"; children = (B91F9974A1A44F86B7D28939 /* TorrentFiltersView.swift */, B10000000000000000000008 /* SearchView.swift */, B10000000000000000000017 /* EpisodePickerView.swift */, ); };
@@ -125,7 +131,7 @@
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F10000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
+		F10000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (9FAE6ECCF0E2483EA97D0402 /* PasswordManagerSupport.swift in Sources */, CEFC7529951648849CA0C270 /* SupabaseAuthCallback.swift in Sources */,
 				1B10550AEFCD4F188605FD99 /* CatalogDiscovery.swift in Sources */,
 				EA6D8FAAD7B8400BB15B0152 /* PlaybackLoadingView.swift in Sources */,
 				2064D5EE897C4B33917DB373 /* PlaybackLoadingState.swift in Sources */,
@@ -140,15 +146,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F10000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000019 /* .env in Resources */, A1000000000000000000001D /* LICENSE in Resources */, A1000000000000000000001E /* default-settings.json in Resources */, ); runOnlyForDeploymentPostprocessing = 0; };
+		F10000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (4AF27959553843638CE9824A /* Assets.xcassets in Resources */, A10000000000000000000019 /* .env in Resources */, A1000000000000000000001D /* LICENSE in Resources */, A1000000000000000000001E /* default-settings.json in Resources */, ); runOnlyForDeploymentPostprocessing = 0; };
 		F10000000000000000000004 /* Embed TorrServer */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 6; files = (A1000000000000000000001C /* TorrServer in Embed TorrServer */, ); name = "Embed TorrServer"; runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		E10000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; ENABLE_PREVIEWS = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; }; name = Debug; };
 		E10000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 14.0; PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_VERSION = 5.0; }; name = Release; };
-		E10000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
-		E10000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_VERSION = 1.0; MARKETING_VERSION = 0.1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
+		E10000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
+		E10000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {ARCHS = arm64; ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; COPY_PHASE_STRIP = NO; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = KinoStream/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", ); PRODUCT_BUNDLE_IDENTIFIER = ru.nailultyev.kinostream; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_VERSION = 1.0; MARKETING_VERSION = 0.1.1; SWIFT_EMIT_LOC_STRINGS = YES; SWIFT_VERSION = 5.0; }; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */

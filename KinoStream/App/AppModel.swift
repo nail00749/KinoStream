@@ -32,6 +32,10 @@ final class AppModel: ObservableObject {
     @Published private(set) var isSupabaseSessionRestored = false
     @Published private(set) var cloudSyncStatus = "Supabase не настроен"
     @Published private(set) var isCloudBusy = false
+    @Published var isPasswordRecoveryPresented = false
+    @Published var passwordRecoveryEmail = ""
+    @Published var authCallbackMessage: String?
+    @Published private(set) var recoveryCallbackRevision = 0
     @Published private(set) var catalogIsLoading = false
     @Published var catalogError: String?
     @Published private(set) var connected = false
@@ -73,6 +77,9 @@ final class AppModel: ObservableObject {
     var libraryAccountID: UUID? { supabaseUserID }
     private weak var attachedCatalog: CatalogStore?
     private var cachedSupabaseService: SupabaseLibrarySyncService?
+    private var passwordRecoveryService: PasswordRecoveryService?
+    private var queuedAuthCallback: URL?
+    private var isHandlingAuthCallback = false
     private var restoringSession = false
     private var cloudSyncRetryCount = 0
     private let supabaseEnvironment = SupabaseEnvironment.loadFromBundle()
@@ -262,10 +269,53 @@ final class AppModel: ObservableObject {
             cloudSyncStatus = "Войдите в аккаунт, чтобы синхронизировать библиотеку"
         }
         isSupabaseSessionRestored = true
+        await processAuthCallback(with: store)
+    }
+
+    func receiveAuthCallback(_ url: URL, with store: CatalogStore) async {
+        guard SupabaseAuthCallback.kind(for: url) != nil else { return }
+        queuedAuthCallback = url
+        await processAuthCallback(with: store)
+    }
+
+    func resumeAuthCallback(with store: CatalogStore) async {
+        await processAuthCallback(with: store)
+    }
+
+    private func processAuthCallback(with store: CatalogStore) async {
+        guard isSupabaseSessionRestored, !isHandlingAuthCallback, !isCloudBusy,
+              let url = queuedAuthCallback, let kind = SupabaseAuthCallback.kind(for: url) else { return }
+        queuedAuthCallback = nil
+        isHandlingAuthCallback = true
+        isCloudBusy = true
+        defer { isHandlingAuthCallback = false; isCloudBusy = false }
+        do {
+            switch kind {
+            case .signup:
+                let service = try configuredSupabaseService()
+                let session = try await service.confirmSignup(from: url)
+                prepareAuthenticatedLibrary(userID: session.user.id, email: session.user.email, store: store)
+                cloudSyncStatus = "Email подтверждён"
+                isCloudBusy = false
+                await synchronizeLibrary(with: store, userID: session.user.id, service: service)
+            case .recovery:
+                let service = try makePasswordRecoveryService()
+                try await service.acceptCallback(url)
+                passwordRecoveryEmail = service.verifiedEmail ?? ""
+                recoveryCallbackRevision += 1
+                isPasswordRecoveryPresented = true
+            }
+        } catch { authCallbackMessage = error.localizedDescription }
+        if queuedAuthCallback != nil {
+            isHandlingAuthCallback = false
+            isCloudBusy = false
+            await processAuthCallback(with: store)
+        }
     }
 
     func signInToSupabase(email: String, password: String, with store: CatalogStore) async {
         guard !isCloudBusy else { return }
+        defer { Task { await processAuthCallback(with: store) } }
         attachCloudSync(to: store)
         isCloudBusy = true
         cloudSyncStatus = "Выполняется вход…"
@@ -284,6 +334,7 @@ final class AppModel: ObservableObject {
 
     func createSupabaseAccount(email: String, password: String, with store: CatalogStore) async {
         guard !isCloudBusy else { return }
+        defer { Task { await processAuthCallback(with: store) } }
         attachCloudSync(to: store)
         isCloudBusy = true
         cloudSyncStatus = "Создаётся аккаунт…"
@@ -303,6 +354,16 @@ final class AppModel: ObservableObject {
             isCloudBusy = false
             cloudSyncStatus = error.localizedDescription
         }
+    }
+
+    func resendSignupConfirmation(email: String) async {
+        guard !isCloudBusy else { return }
+        isCloudBusy = true
+        defer { isCloudBusy = false }
+        do {
+            try await configuredSupabaseService().resendSignupConfirmation(email: email)
+            cloudSyncStatus = "Проверьте почту: отправлено новое письмо подтверждения."
+        } catch { cloudSyncStatus = error.localizedDescription }
     }
 
     func flushBuiltInPlayback(to catalog: CatalogStore) {
@@ -572,8 +633,13 @@ final class AppModel: ObservableObject {
     }
 
     func makePasswordRecoveryService() throws -> PasswordRecoveryService {
-        try configuredSupabaseService().makePasswordRecoveryService()
+        if let passwordRecoveryService { return passwordRecoveryService }
+        let service = try configuredSupabaseService().makePasswordRecoveryService()
+        passwordRecoveryService = service
+        return service
     }
+
+    func finishPasswordRecovery() { passwordRecoveryService = nil }
 
     private func makeSupabaseService() -> SupabaseLibrarySyncService? {
         try? configuredSupabaseService()

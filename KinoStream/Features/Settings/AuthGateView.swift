@@ -53,12 +53,16 @@ struct SupabaseAuthView: View {
     @EnvironmentObject private var catalog: CatalogStore
     @State private var email = ""
     @State private var password = ""
+    @State private var passwordConfirmation = ""
     @State private var isCreatingAccount = false
     @State private var hasSubmitted = false
-    @State private var showingRecovery = false
+    @State private var showingPasswordHelp = false
+    @FocusState private var focusedField: Field?
+    private enum Field { case email, password, confirmation }
 
     private var canSubmit: Bool {
         email.trimmingCharacters(in: .whitespacesAndNewlines).contains("@") && !password.isEmpty && !model.isCloudBusy
+            && (!isCreatingAccount || (password.count >= 6 && password == passwordConfirmation))
     }
 
     var body: some View {
@@ -73,6 +77,7 @@ struct SupabaseAuthView: View {
                     }
                     .padding(4)
                     .background(Color.black.opacity(0.22), in: RoundedRectangle(cornerRadius: 10))
+                    .disabled(model.isCloudBusy)
 
                     VStack(alignment: .leading, spacing: 7) {
                         Text("EMAIL")
@@ -80,7 +85,10 @@ struct SupabaseAuthView: View {
                         TextField("name@example.com", text: $email)
                             .textFieldStyle(.plain)
                             .font(.system(size: 12))
-                            .textContentType(.emailAddress)
+                            .textContentType(.username)
+                            .focused($focusedField, equals: .email)
+                            .disabled(model.isCloudBusy)
+                            .onSubmit { focusedField = .password }
                             .autocorrectionDisabled()
                             .padding(.horizontal, 11)
                             .frame(height: 40)
@@ -95,11 +103,31 @@ struct SupabaseAuthView: View {
                             .textFieldStyle(.plain)
                             .font(.system(size: 12))
                             .textContentType(isCreatingAccount ? .newPassword : .password)
+                            .focused($focusedField, equals: .password)
+                            .disabled(model.isCloudBusy)
+                            .privacySensitive()
                             .padding(.horizontal, 11)
                             .frame(height: 40)
                             .background(Color.black.opacity(0.2), in: RoundedRectangle(cornerRadius: 8))
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.white.opacity(0.07), lineWidth: 1))
+                            .onSubmit { if isCreatingAccount { focusedField = .confirmation } else { submit() } }
+                    }
+
+                    if isCreatingAccount {
+                        SecureField("Повторите пароль", text: $passwordConfirmation)
+                            .textContentType(.newPassword)
+                            .textFieldStyle(.plain)
+                            .focused($focusedField, equals: .confirmation)
+                            .disabled(model.isCloudBusy)
+                            .privacySensitive()
+                            .padding(.horizontal, 11).frame(height: 40)
+                            .background(Color.black.opacity(0.2), in: RoundedRectangle(cornerRadius: 8))
                             .onSubmit(submit)
+                        if password.count > 0 && password.count < 6 {
+                            Text("Минимум 6 символов").font(.caption).foregroundStyle(.orange)
+                        } else if !passwordConfirmation.isEmpty && password != passwordConfirmation {
+                            Text("Пароли не совпадают").font(.caption).foregroundStyle(.orange)
+                        }
                     }
 
                     Button(action: submit) {
@@ -114,11 +142,25 @@ struct SupabaseAuthView: View {
                     .disabled(!canSubmit)
 
                     if !isCreatingAccount {
-                        Button("Забыли пароль?") { showingRecovery = true }
+                        Button("Забыли пароль?") {
+                            model.passwordRecoveryEmail = email
+                            model.isPasswordRecoveryPresented = true
+                        }
                             .buttonStyle(.plain)
                             .foregroundStyle(KinoPalette.accent)
                             .disabled(model.isCloudBusy)
+                    } else if hasSubmitted && model.supabaseUserEmail == nil {
+                        Button("Отправить подтверждение email повторно") {
+                            let address = email.trimmingCharacters(in: .whitespacesAndNewlines)
+                            Task { await model.resendSignupConfirmation(email: address) }
+                        }
+                        .buttonStyle(.plain).foregroundStyle(KinoPalette.accent)
+                        .disabled(model.isCloudBusy || !email.contains("@"))
                     }
+                    Button { showingPasswordHelp = true } label: {
+                        Label("Пароли macOS", systemImage: "key.fill")
+                    }
+                    .buttonStyle(.plain).foregroundStyle(KinoPalette.muted)
 
                     if hasSubmitted && model.supabaseUserEmail == nil {
                         Text(model.cloudSyncStatus)
@@ -139,9 +181,10 @@ struct SupabaseAuthView: View {
         .padding(28)
         .frame(minWidth: 480, minHeight: 560)
         .background(KinoPalette.background)
-        .sheet(isPresented: $showingRecovery) {
-            PasswordRecoveryView(initialEmail: email)
+        .sheet(isPresented: $showingPasswordHelp) {
+            PasswordManagerHelpView(email: email)
         }
+        .onAppear { focusedField = .email }
     }
 
     private var statusColor: Color {
@@ -164,6 +207,7 @@ struct SupabaseAuthView: View {
         guard canSubmit else { return }
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
         let password = password
+        let isCreatingAccount = isCreatingAccount
         hasSubmitted = true
         Task {
             if isCreatingAccount {
@@ -173,12 +217,13 @@ struct SupabaseAuthView: View {
             }
             if model.supabaseUserEmail != nil || model.cloudSyncStatus.contains("Проверьте почту") {
                 self.password = ""
+                self.passwordConfirmation = ""
             }
         }
     }
 }
 
-private struct PasswordRecoveryView: View {
+struct PasswordRecoveryView: View {
     @EnvironmentObject private var model: AppModel
     @Environment(\.dismiss) private var dismiss
     @State private var email: String
@@ -201,7 +246,7 @@ private struct PasswordRecoveryView: View {
             }
             if step == 0 {
                 Text("Отправим письмо для восстановления доступа.").foregroundStyle(KinoPalette.muted)
-                TextField("Email", text: $email).textContentType(.emailAddress).autocorrectionDisabled()
+                TextField("Email", text: $email).textContentType(.username).autocorrectionDisabled().disabled(busy)
                 Button("Отправить письмо") { perform {
                     let recovery = try model.makePasswordRecoveryService()
                     try await recovery.sendEmail(email.trimmingCharacters(in: .whitespacesAndNewlines))
@@ -211,7 +256,7 @@ private struct PasswordRecoveryView: View {
                 } }.buttonStyle(AccentButtonStyle()).disabled(busy || !email.contains("@"))
             } else if step == 1 {
                 Text("Если аккаунт существует, письмо придёт на \(email). Проверьте также папку «Спам».")
-                Text("Скопируйте ссылку восстановления из письма, не открывая её, и вставьте ниже. Если письмо содержит шестизначный код, можно ввести его.")
+                Text("Нажмите ссылку в письме: откроется KinoStream с формой нового пароля. Если переход не сработал, вставьте ещё не открытую ссылку или код ниже.")
                     .foregroundStyle(KinoPalette.muted).fixedSize(horizontal: false, vertical: true)
                 SecureField("Ссылка из письма или код", text: $credential)
                 Button("Подтвердить") { perform {
@@ -233,7 +278,7 @@ private struct PasswordRecoveryView: View {
                 Button("Сохранить пароль") { perform {
                     guard let service else { throw SupabaseLibrarySyncError.invalidConfiguration }
                     try await service.setPassword(password)
-                    password = ""; confirmation = ""; self.service = nil; step = 3
+                    password = ""; confirmation = ""; self.service = nil; model.finishPasswordRecovery(); step = 3
                 } }.buttonStyle(AccentButtonStyle()).disabled(busy || password.count < 6 || password != confirmation)
             } else {
                 Label("Пароль изменён", systemImage: "checkmark.circle.fill").foregroundStyle(KinoPalette.accent)
@@ -249,6 +294,13 @@ private struct PasswordRecoveryView: View {
         .frame(width: 510)
         .background(KinoPalette.background)
         .interactiveDismissDisabled(busy)
+        .onAppear { adoptVerifiedRecovery() }
+        .onChange(of: model.recoveryCallbackRevision) { _, _ in adoptVerifiedRecovery() }
+    }
+
+    private func adoptVerifiedRecovery() {
+        guard let recovery = try? model.makePasswordRecoveryService(), let verifiedEmail = recovery.verifiedEmail else { return }
+        service = recovery; email = verifiedEmail; credential = ""; message = nil; step = 2
     }
 
     private func perform(_ operation: @escaping @MainActor () async throws -> Void) {
@@ -262,14 +314,32 @@ private struct PasswordRecoveryView: View {
     }
 }
 
+private struct PasswordManagerHelpView: View {
+    @Environment(\.dismiss) private var dismiss
+    let email: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("Сохранить вход в «Пароли»").font(.title2.bold())
+            Text("Откройте «Пароли», создайте новую запись с названием KinoStream и сохраните email и пароль. Пароль остаётся в менеджере Apple.")
+                .fixedSize(horizontal: false, vertical: true)
+            if !email.isEmpty { Text("Email: \(email)").textSelection(.enabled) }
+            Text("Для заполнения нажмите правой кнопкой на поле входа → «Автозаполнение» → «Пароли». Доступность меню зависит от версии macOS и настроек автозаполнения.")
+                .foregroundStyle(KinoPalette.muted).fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Button("Открыть «Пароли»") { PasswordManagerSupport.openManager() }
+                    .buttonStyle(AccentButtonStyle())
+                Button("Готово") { dismiss() }
+            }
+        }.padding(28).frame(width: 480).background(KinoPalette.background)
+    }
+}
+
 private struct AuthBranding: View {
     var body: some View {
         VStack(spacing: 12) {
-            Image(systemName: "play.fill")
-                .font(.system(size: 21, weight: .black))
-                .foregroundStyle(KinoPalette.background)
-                .frame(width: 54, height: 54)
-                .background(KinoPalette.accent, in: RoundedRectangle(cornerRadius: 16))
+            Image(nsImage: NSApplication.shared.applicationIconImage)
+                .resizable().frame(width: 72, height: 72)
             Text("KinoStream")
                 .font(.system(size: 23, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)

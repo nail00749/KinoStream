@@ -98,11 +98,25 @@ struct SupabaseLibrarySyncService {
         do {
             return try await client.auth.signUp(
                 email: email.trimmingCharacters(in: .whitespacesAndNewlines),
-                password: password
+                password: password,
+                redirectTo: SupabaseAuthCallback.signupURL
             )
         } catch {
             throw SupabaseLibrarySyncError.signUpFailed
         }
+    }
+
+    func confirmSignup(from url: URL) async throws -> Session {
+        guard SupabaseAuthCallback.kind(for: url) == .signup else { throw SupabaseLibrarySyncError.authCallbackFailed }
+        do { return try await client.auth.session(from: url) }
+        catch { throw SupabaseLibrarySyncError.authCallbackFailed }
+    }
+
+    func resendSignupConfirmation(email: String) async throws {
+        do {
+            try await client.auth.resend(email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                type: .signup, emailRedirectTo: SupabaseAuthCallback.signupURL)
+        } catch { throw SupabaseLibrarySyncError.confirmationEmailFailed }
     }
 
     func restoreSession() async throws -> Session {
@@ -192,9 +206,15 @@ enum SupabaseLibrarySyncError: LocalizedError {
     case recoveryEmailFailed
     case recoveryTokenFailed
     case passwordUpdateFailed
+    case authCallbackFailed
+    case confirmationEmailFailed
 
     var errorDescription: String? {
         switch self {
+        case .confirmationEmailFailed:
+            "Не удалось отправить подтверждение. Проверьте email и соединение, затем попробуйте позже."
+        case .authCallbackFailed:
+            "Не удалось открыть ссылку входа. Если email уже подтверждён, войдите с паролем. Для восстановления запросите новое письмо на этом Mac."
         case .recoveryEmailFailed:
             "Не удалось отправить письмо. Проверьте email и соединение, затем попробуйте позже."
         case .recoveryTokenFailed:
@@ -223,16 +243,28 @@ enum SupabaseLibrarySyncError: LocalizedError {
 final class PasswordRecoveryService {
     private let client: SupabaseClient
     private let projectURL: URL
+    private(set) var verifiedEmail: String?
 
     init(projectURL: URL, publishableKey: String) {
         self.projectURL = projectURL
         client = SupabaseClient(supabaseURL: projectURL, supabaseKey: publishableKey,
-            options: .init(auth: .init(storage: RecoveryMemoryStorage())))
+            options: .init(auth: .init(storage: RecoveryMemoryStorage(),
+                storageKey: "kinostream-password-recovery", flowType: .pkce)))
     }
 
     func sendEmail(_ email: String) async throws {
-        do { try await client.auth.resetPasswordForEmail(email) }
+        verifiedEmail = nil
+        do { try await client.auth.resetPasswordForEmail(email, redirectTo: SupabaseAuthCallback.recoveryURL) }
         catch { throw SupabaseLibrarySyncError.recoveryEmailFailed }
+    }
+
+    func acceptCallback(_ url: URL) async throws {
+        guard SupabaseAuthCallback.kind(for: url) == .recovery else { throw SupabaseLibrarySyncError.authCallbackFailed }
+        do {
+            let session = try await client.auth.session(from: url)
+            guard let email = session.user.email, !email.isEmpty else { throw SupabaseLibrarySyncError.recoveryTokenFailed }
+            verifiedEmail = email
+        } catch { throw SupabaseLibrarySyncError.recoveryTokenFailed }
     }
 
     func verify(email: String, credential: String) async throws {
@@ -255,26 +287,33 @@ final class PasswordRecoveryService {
                 try? await client.auth.signOut(scope: .local)
                 throw SupabaseLibrarySyncError.recoveryTokenFailed
             }
+            verifiedEmail = response.user.email
         } catch { throw SupabaseLibrarySyncError.recoveryTokenFailed }
     }
 
     func setPassword(_ password: String) async throws {
+        guard verifiedEmail != nil else { throw SupabaseLibrarySyncError.recoveryTokenFailed }
         do { _ = try await client.auth.update(user: UserAttributes(password: password)) }
         catch { throw SupabaseLibrarySyncError.passwordUpdateFailed }
         try? await client.auth.signOut(scope: .local)
+        verifiedEmail = nil
     }
 }
 
 private final class RecoveryMemoryStorage: AuthLocalStorage, @unchecked Sendable {
     private let lock = NSLock()
     private var values: [String: Data] = [:]
+    private let verifierStorage = KeychainLocalStorage(service: "ru.nailultyev.kinostream.recovery-verifier")
     func store(key: String, value: Data) throws {
+        if key.hasSuffix("-code-verifier") { try verifierStorage.store(key: key, value: value); return }
         lock.lock(); defer { lock.unlock() }; values[key] = value
     }
     func retrieve(key: String) throws -> Data? {
+        if key.hasSuffix("-code-verifier") { return try verifierStorage.retrieve(key: key) }
         lock.lock(); defer { lock.unlock() }; return values[key]
     }
     func remove(key: String) throws {
+        if key.hasSuffix("-code-verifier") { try verifierStorage.remove(key: key); return }
         lock.lock(); defer { lock.unlock() }; values.removeValue(forKey: key)
     }
 }
