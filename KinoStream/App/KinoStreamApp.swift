@@ -37,6 +37,7 @@ struct KinoStreamApp: App {
                 model.finishPasswordRecovery()
             }) {
                 PasswordRecoveryView(initialEmail: model.passwordRecoveryEmail)
+                    .environmentObject(model)
             }
             .alert("Ссылка из письма", isPresented: Binding(
                 get: { model.authCallbackMessage != nil },
