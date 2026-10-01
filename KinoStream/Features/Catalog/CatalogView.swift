@@ -13,16 +13,20 @@ struct FavoritesView: View {
     @State private var selectedTab: FavoritesTab = .media
 
     var body: some View {
-        VStack(spacing: 0) {
-            Picker("Избранное", selection: $selectedTab) {
-                Text("Фильмы и сериалы").tag(FavoritesTab.media)
-                Text("Раздачи").tag(FavoritesTab.torrents)
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Picker("Избранное", selection: $selectedTab) {
+                    Text("Фильмы и сериалы").tag(FavoritesTab.media)
+                    Text("Раздачи").tag(FavoritesTab.torrents)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 340, height: 32)
+                Spacer(minLength: 0)
             }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 340)
             .padding(.horizontal, 30)
-            .padding(.top, 18)
-            .padding(.bottom, 4)
+            .frame(height: 54, alignment: .bottomLeading)
+            .fixedSize(horizontal: false, vertical: true)
 
             Group {
                 switch selectedTab {
@@ -32,6 +36,7 @@ struct FavoritesView: View {
                     FavoriteTorrentsView(query: query, onSearch: onSearch)
                 }
             }
+            .id(selectedTab)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -206,6 +211,7 @@ struct CatalogView: View {
                             watchedRow(item)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.bottom, 20)
                 }
                 .scrollIndicators(.hidden)
@@ -226,6 +232,7 @@ struct CatalogView: View {
                         .padding(.bottom, 20)
                     }
                     .scrollIndicators(.hidden)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                     if filteredItems.count > visibleItems.count {
                         Button {
@@ -394,6 +401,7 @@ struct CatalogView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(13)
         .background(KinoPalette.card, in: RoundedRectangle(cornerRadius: 13))
         .overlay(RoundedRectangle(cornerRadius: 13).stroke(KinoPalette.line, lineWidth: 1))

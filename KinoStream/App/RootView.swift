@@ -50,12 +50,19 @@ struct RootView: View {
             VStack(spacing: 0) {
                 topBar
                 Rectangle().fill(Color.white.opacity(0.07)).frame(height: 1)
-                page
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                GeometryReader { viewport in
+                    page
+                        .id(selection)
+                        .frame(width: viewport.size.width, height: viewport.size.height, alignment: .topLeading)
+                        .clipped()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .layoutPriority(1)
                 if let message = model.bannerMessage {
                     banner(message)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(KinoPalette.background)
         }
         .onReceive(model.playbackController.$fileRequest) { files in
@@ -237,6 +244,8 @@ struct RootView: View {
                                 .frame(width: 19)
                             Text(item.rawValue)
                                 .font(.system(size: 13, weight: selection == item ? .semibold : .medium))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.85)
                             Spacer(minLength: 0)
                             if item == .torrents && !model.torrents.isEmpty {
                                 Text("\(model.torrents.count)")

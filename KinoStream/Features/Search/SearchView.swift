@@ -284,6 +284,8 @@ struct FavoriteTorrentsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 23) {
             SectionHeading(title: "Раздачи", subtitle: "Раздачи, отмеченные сердцем в поиске JacRed")
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             if catalog.favoriteTorrents.isEmpty {
                 EmptyState(
@@ -307,12 +309,14 @@ struct FavoriteTorrentsView: View {
                             favoriteRow(favorite)
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.bottom, 20)
                 }
                 .scrollIndicators(.hidden)
             }
         }
         .padding(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .sheet(item: $pendingFiles) { selection in
             PlaybackFilePickerView(torrent: selection.torrent, files: selection.files) { file in
                 model.play(selection.torrent, file: file, trackingContext: selection.context, catalog: catalog)
