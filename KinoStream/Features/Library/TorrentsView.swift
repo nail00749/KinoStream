@@ -136,29 +136,45 @@ struct TorrentsView: View {
                             let sectionID = "\(torrent.hash)-season-\(season.number)"
                             let isExpanded = !collectionQuery.isEmpty || expandedSections.contains(sectionID)
                             VStack(spacing: 0) {
-                                Button {
-                                    toggleSection(sectionID)
-                                } label: {
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "rectangle.stack.fill")
-                                            .font(.system(size: 11))
-                                            .foregroundStyle(KinoPalette.accent)
-                                        Text(seasonTitle(season.number))
-                                            .font(.system(size: 11, weight: .semibold))
-                                            .foregroundStyle(.white)
-                                        Text("\(season.episodes.count) сер.")
-                                            .font(.system(size: 10))
-                                            .foregroundStyle(KinoPalette.muted)
-                                        Spacer()
-                                        Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                                            .font(.system(size: 9, weight: .bold))
+                                HStack(spacing: 8) {
+                                    Button {
+                                        toggleSection(sectionID)
+                                    } label: {
+                                        HStack(spacing: 8) {
+                                            Image(systemName: "rectangle.stack.fill")
+                                                .font(.system(size: 11))
+                                                .foregroundStyle(KinoPalette.accent)
+                                            Text(seasonTitle(season.number))
+                                                .font(.system(size: 11, weight: .semibold))
+                                                .foregroundStyle(.white)
+                                            Text("\(season.episodes.count) сер.")
+                                                .font(.system(size: 10))
+                                                .foregroundStyle(KinoPalette.muted)
+                                            Spacer()
+                                            Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                                                .font(.system(size: 9, weight: .bold))
+                                                .foregroundStyle(KinoPalette.accent)
+                                        }
+                                        .padding(.horizontal, 11)
+                                        .frame(maxWidth: .infinity, minHeight: 38, alignment: .leading)
+                                        .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(.plain)
+                                    Button {
+                                        let hint = catalog.playbackContext(forTorrentHash: torrent.hash)?.season
+                                        let allSeasons = groupEpisodes(torrent.fileStats.filter(\.isPlayable), seasonHint: hint).seasons
+                                        let files = allSeasons.first(where: { $0.number == season.number })?.episodes.map(\.file) ?? []
+                                        let title = catalog.playbackContext(forTorrentHash: torrent.hash)?.title ?? torrent.displayTitle
+                                        model.downloadSeason(torrent, files: files, title: title, season: season.number)
+                                    } label: {
+                                        Label(season.number < 0 ? "Скачать серии" : "Скачать сезон", systemImage: "arrow.down.circle")
+                                            .font(.system(size: 10, weight: .semibold))
                                             .foregroundStyle(KinoPalette.accent)
                                     }
-                                    .padding(.horizontal, 11)
-                                    .frame(maxWidth: .infinity, minHeight: 38, alignment: .leading)
-                                    .contentShape(Rectangle())
+                                    .buttonStyle(.plain)
+                                    .help("Скачать все серии этого сезона из раздачи, включая скрытые поиском")
+                                    .padding(.trailing, 11)
                                 }
-                                .buttonStyle(.plain)
 
                                 if isExpanded {
                                     fileList(season.episodes, torrent: torrent)
@@ -227,6 +243,7 @@ struct TorrentsView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(episode.episode.map { "Серия \($0)" } ?? episode.file.name)
                             .font(.system(size: 11, weight: .medium))
+                        FileDownloadStatusView(controller: model.downloads, torrentHash: torrent.hash, fileID: episode.file.id)
                             .foregroundStyle(.white.opacity(0.88))
                             .lineLimit(1)
                         if let record {
@@ -244,6 +261,12 @@ struct TorrentsView: View {
                     }
                     Spacer()
                     Text(episode.file.length.fileSizeLabel).font(.system(size: 10)).foregroundStyle(KinoPalette.muted)
+                    Button { model.download(torrent, file: episode.file) } label: {
+                        Image(systemName: "arrow.down.circle")
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(KinoPalette.accent)
+                    .help("Скачать на устройство")
                     Button("Смотреть") {
                         model.play(torrent, file: episode.file, trackingContext: context, catalog: catalog)
                     }

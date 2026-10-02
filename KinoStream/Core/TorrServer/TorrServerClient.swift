@@ -65,6 +65,14 @@ struct TorrServerClient {
         return AVPlayer(playerItem: AVPlayerItem(asset: AVURLAsset(url: url, options: options)))
     }
 
+    func downloadRequest(hash: String, fileID: Int) -> URLRequest? {
+        guard let url = playbackURL(hash: hash, fileID: fileID) else { return nil }
+        var result = request(url: url)
+        result.timeoutInterval = 120
+        result.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        return result
+    }
+
     private var authorizationHeader: String? {
         guard !username.isEmpty else { return nil }
         let credentials = Data("\(username):\(password)".utf8).base64EncodedString()

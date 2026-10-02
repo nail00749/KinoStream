@@ -29,7 +29,7 @@ final class PlaybackController: ObservableObject {
     @Published private(set) var fileRequest: TorrentFileSelection?
     @Published private(set) var searchRequest: TorrentSearchTarget?
     private enum Attempt {
-        case search(TorrentSearchResult, TorrentSearchTarget)
+        case search(TorrentSearchResult, TorrentSearchTarget, Bool)
         case file(Torrent, TorrentFile, PlaybackContext?)
         case context(PlaybackContext)
     }
@@ -90,8 +90,8 @@ final class PlaybackController: ObservableObject {
     func retry() async {
         guard let lastAttempt, let catalog = activeCatalog else { return }
         switch lastAttempt {
-        case .search(let result, let target):
-            do { fileRequest = try await prepare(result, target: target, catalog: catalog) }
+        case .search(let result, let target, let chooseFilesOnly):
+            do { fileRequest = try await prepare(result, target: target, catalog: catalog, chooseFilesOnly: chooseFilesOnly) }
             catch {
                 // prepare preserves an actionable failure state; cancellation clears it.
             }
@@ -189,13 +189,13 @@ final class PlaybackController: ObservableObject {
 
     init(model: AppModel) { self.model = model }
 
-    func prepare(_ result: TorrentSearchResult, target: TorrentSearchTarget, catalog: CatalogStore) async throws -> TorrentFileSelection? {
+    func prepare(_ result: TorrentSearchResult, target: TorrentSearchTarget, catalog: CatalogStore, chooseFilesOnly: Bool = false) async throws -> TorrentFileSelection? {
         guard let link = result.torrentLink else { throw TorrServerError.invalidURL }
         cancelLoading()
         let token = preparationID
         let context = target.playbackContext
         let accountID = model.libraryAccountID
-        lastAttempt = .search(result, target)
+        lastAttempt = .search(result, target, chooseFilesOnly)
         activeCatalog = catalog
         activeContext = context
         activeHash = nil
@@ -213,6 +213,12 @@ final class PlaybackController: ObservableObject {
             preparationTask = nil
             if let context { catalog.associate(torrentHash: torrent.hash, with: context) }
             loadingState = nil
+            if chooseFilesOnly {
+                let files = torrent.fileStats.filter(\.isPlayable)
+                guard !files.isEmpty else { throw TorrServerError.torrentNotReady }
+                let matching = Self.matchingFile(in: files, context: context)
+                return TorrentFileSelection(torrent: torrent, files: matching.map { [$0] } ?? files, context: context)
+            }
             return selectOrPlay(torrent, context: context, catalog: catalog)
         } catch {
             guard preparationID == token else { throw CancellationError() }

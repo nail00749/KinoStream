@@ -143,6 +143,7 @@ struct RootView: View {
             PlaybackFilePickerView(torrent: selection.torrent, files: selection.files) { file in
                 model.play(selection.torrent, file: file, trackingContext: selection.context, catalog: catalog)
             }
+            .environmentObject(model)
             .frame(minWidth: 540, minHeight: 420)
         }
         .sheet(isPresented: $showingAddTorrent, onDismiss: { addTorrentPrefill = "" }) {
@@ -361,6 +362,8 @@ struct RootView: View {
                     .background(KinoPalette.accent, in: RoundedRectangle(cornerRadius: 9))
             }
             .buttonStyle(.plain)
+
+            DownloadsButton(controller: model.downloads)
 
             Button {
                 Task { await model.checkConnection() }

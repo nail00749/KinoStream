@@ -109,6 +109,7 @@ struct SearchView: View {
                 PlaybackFilePickerView(torrent: selection.torrent, files: selection.files) { file in
                     model.play(selection.torrent, file: file, trackingContext: selection.context, catalog: catalog)
                 }
+                .environmentObject(model)
                 .frame(minWidth: 540, minHeight: 420)
             }
         }
@@ -168,6 +169,16 @@ struct SearchView: View {
             .accessibilityLabel(catalog.isFavorite(result) ? "Убрать раздачу из избранного" : "Добавить раздачу в избранное")
             .disabled(result.torrentLink == nil)
             Button {
+                Task { await startPlayback(result, chooseFilesOnly: true) }
+            } label: {
+                Image(systemName: "arrow.down.circle")
+                    .font(.system(size: 17))
+                    .foregroundStyle(KinoPalette.accent)
+            }
+            .buttonStyle(.plain)
+            .help("Скачать на устройство")
+            .disabled(result.torrentLink == nil || startingID != nil)
+            Button {
                 Task { await startPlayback(result) }
             } label: {
                 if startingID == result.id { ProgressView().controlSize(.small) }
@@ -182,7 +193,7 @@ struct SearchView: View {
     }
 
     @MainActor
-    private func startPlayback(_ result: TorrentSearchResult) async {
+    private func startPlayback(_ result: TorrentSearchResult, chooseFilesOnly: Bool = false) async {
         guard result.torrentLink != nil else {
             model.bannerMessage = "Для этой раздачи нет magnet или ссылки на файл."
             return
@@ -191,7 +202,7 @@ struct SearchView: View {
         startingID = result.id
         defer { startingID = nil }
         do {
-            if let selection = try await model.playbackController.prepare(result, target: requestedTarget, catalog: catalog) {
+            if let selection = try await model.playbackController.prepare(result, target: requestedTarget, catalog: catalog, chooseFilesOnly: chooseFilesOnly) {
                 activeSheet = .files(selection)
             }
         } catch is CancellationError {
@@ -220,7 +231,12 @@ struct PlaybackFilePickerView: View {
     let torrent: Torrent
     let files: [TorrentFile]
     let onSelect: (TorrentFile) -> Void
+    @EnvironmentObject private var model: AppModel
     @Environment(\.dismiss) private var dismiss
+
+    private var seasonNumbers: [Int] {
+        Set(torrent.fileStats.filter(\.isPlayable).compactMap { $0.episodeCoordinates?.season }).sorted()
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 17) {
@@ -232,26 +248,51 @@ struct PlaybackFilePickerView: View {
                 Spacer()
                 Button("Отмена") { dismiss() }.buttonStyle(.plain).foregroundStyle(KinoPalette.muted)
             }
+            if !seasonNumbers.isEmpty {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 12) {
+                        ForEach(seasonNumbers, id: \.self) { season in
+                            Button {
+                                let episodes = torrent.fileStats.filter { $0.isPlayable && $0.episodeCoordinates?.season == season }
+                                model.downloadSeason(torrent, files: episodes, title: torrent.displayTitle, season: season)
+                            } label: {
+                                Label("Скачать сезон \(season)", systemImage: "arrow.down.circle.fill")
+                            }
+                            .buttonStyle(AccentButtonStyle())
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
+                .frame(height: 39)
+            }
             ScrollView {
                 LazyVStack(spacing: 8) {
                     ForEach(files) { file in
-                        Button {
-                            onSelect(file)
-                            dismiss()
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "play.circle.fill").foregroundStyle(KinoPalette.accent)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(file.name).font(.system(size: 11, weight: .semibold)).foregroundStyle(.white).lineLimit(2)
+                        HStack(spacing: 12) {
+                            Button {
+                                onSelect(file)
+                                dismiss()
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "play.circle.fill").foregroundStyle(KinoPalette.accent)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(file.name).font(.system(size: 11, weight: .semibold)).foregroundStyle(.white).lineLimit(2)
                                     Text(file.length.fileSizeLabel).font(.system(size: 10)).foregroundStyle(KinoPalette.muted)
+                                    FileDownloadStatusView(controller: model.downloads, torrentHash: torrent.hash, fileID: file.id)
+                                    }
+                                    Spacer()
+                                    Image(systemName: "arrow.right").font(.system(size: 10, weight: .bold)).foregroundStyle(KinoPalette.muted)
                                 }
-                                Spacer()
-                                Image(systemName: "arrow.right").font(.system(size: 10, weight: .bold)).foregroundStyle(KinoPalette.muted)
+                                .padding(12)
+                                .background(KinoPalette.card, in: RoundedRectangle(cornerRadius: 10))
                             }
-                            .padding(12)
-                            .background(KinoPalette.card, in: RoundedRectangle(cornerRadius: 10))
+                            .buttonStyle(.plain)
+                            Button { model.download(torrent, file: file) } label: {
+                                Label("Скачать", systemImage: "arrow.down.circle")
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(KinoPalette.accent)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -321,6 +362,7 @@ struct FavoriteTorrentsView: View {
             PlaybackFilePickerView(torrent: selection.torrent, files: selection.files) { file in
                 model.play(selection.torrent, file: file, trackingContext: selection.context, catalog: catalog)
             }
+            .environmentObject(model)
             .frame(minWidth: 540, minHeight: 420)
         }
     }
@@ -354,6 +396,16 @@ struct FavoriteTorrentsView: View {
             Spacer(minLength: 10)
 
             Button {
+                Task { await startPlayback(saved, chooseFilesOnly: true) }
+            } label: {
+                Image(systemName: "arrow.down.circle")
+                    .font(.system(size: 17))
+                    .foregroundStyle(KinoPalette.accent)
+            }
+            .buttonStyle(.plain)
+            .help("Скачать на устройство")
+            .disabled(saved.result.torrentLink == nil || startingID != nil)
+            Button {
                 Task { await startPlayback(saved) }
             } label: {
                 if startingID == saved.id { ProgressView().controlSize(.small) }
@@ -380,7 +432,7 @@ struct FavoriteTorrentsView: View {
     }
 
     @MainActor
-    private func startPlayback(_ saved: FavoriteTorrent) async {
+    private func startPlayback(_ saved: FavoriteTorrent, chooseFilesOnly: Bool = false) async {
         guard saved.result.torrentLink != nil else {
             model.bannerMessage = "Для этой раздачи нет magnet или ссылки на файл."
             return
@@ -388,7 +440,7 @@ struct FavoriteTorrentsView: View {
         startingID = saved.id
         defer { startingID = nil }
         do {
-            pendingFiles = try await model.playbackController.prepare(saved.result, target: saved.target, catalog: catalog)
+            pendingFiles = try await model.playbackController.prepare(saved.result, target: saved.target, catalog: catalog, chooseFilesOnly: chooseFilesOnly)
         } catch is CancellationError {
         } catch {
             if model.playbackController.loadingState?.isFailure != true {

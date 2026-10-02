@@ -47,6 +47,7 @@ struct KinoStreamApp: App {
             } message: { Text(model.authCallbackMessage ?? "") }
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
                 model.stopVLCPlaybackMonitoring()
+                model.downloads.cancelAll()
                 model.stopBundledTorrServer()
             }
         }

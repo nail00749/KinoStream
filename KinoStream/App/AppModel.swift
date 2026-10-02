@@ -5,6 +5,33 @@ import SwiftUI
 
 @MainActor
 final class AppModel: ObservableObject {
+    let downloads = DownloadController()
+
+    func downloadSeason(_ torrent: Torrent, files: [TorrentFile], title: String, season: Int) {
+        guard let client, !files.isEmpty else {
+            bannerMessage = "Нет доступных файлов сезона. Проверьте TorrServer."
+            return
+        }
+        let requests = files.compactMap { file -> (TorrentFile, URLRequest)? in
+            client.downloadRequest(hash: torrent.hash, fileID: file.id).map { (file, $0) }
+        }
+        guard requests.count == files.count else {
+            bannerMessage = "Не удалось подготовить ссылки на серии."
+            return
+        }
+        let seasonName = season == 0 ? "Спецвыпуски" : season < 0 ? "Сезон не указан" : "Сезон \(season)"
+        downloads.chooseSeasonFolder(files: requests, folderName: "\(title) — \(seasonName)") { [weak self] message in
+            self?.bannerMessage = message
+        }
+    }
+
+    func download(_ torrent: Torrent, file: TorrentFile) {
+        guard let request = client?.downloadRequest(hash: torrent.hash, fileID: file.id) else {
+            bannerMessage = "Не удалось создать ссылку для скачивания. Проверьте TorrServer."
+            return
+        }
+        downloads.chooseDestination(request: request, file: file)
+    }
     @Published var torrServerMode: TorrServerMode = TorrServerMode(
         rawValue: UserDefaults.standard.string(forKey: "torrServerMode") ?? "bundled"
     ) ?? .bundled {
@@ -89,6 +116,7 @@ final class AppModel: ObservableObject {
     private var cloudSyncQueued = false
     private var lastCloudSyncAttemptAt: Date?
     private var vlcPlaybackMonitor: VLCPlaybackMonitor?
+    private var iinaLaunchID: UUID?
 
     init() {
         UserDefaults.standard.removeObject(forKey: "supabaseProjectURL")
@@ -179,6 +207,7 @@ final class AppModel: ObservableObject {
     }
 
     func stopVLCPlaybackMonitoring() {
+        iinaLaunchID = nil
         playbackController.cancelAutoplay()
         vlcPlaybackMonitor?.stop()
         vlcPlaybackMonitor = nil
@@ -374,6 +403,7 @@ final class AppModel: ObservableObject {
 
     private func prepareAuthenticatedLibrary(userID: UUID, email: String?, store: CatalogStore) {
         if supabaseUserID != userID {
+            downloads.resetSession()
             cloudSyncTask?.cancel()
             cloudSyncTask = nil
             pendingPlaybackChoice = nil
@@ -399,6 +429,7 @@ final class AppModel: ObservableObject {
         do {
             let service = try configuredSupabaseService()
             try await service.signOut()
+            downloads.resetSession()
             pendingPlaybackChoice = nil
             playbackController.resetSession()
             stopVLCPlaybackMonitoring()
@@ -554,6 +585,38 @@ final class AppModel: ObservableObject {
         }
         stopVLCPlaybackMonitoring()
         playbackController.beginFile(torrent, file: file, context: resolvedContext, catalog: catalog)
+        if playbackPlayer == .iina {
+            guard !activeServerRequiresAuthentication else {
+                playbackController.reportPlayerState(.failed("Для TorrServer с авторизацией выберите встроенный плеер. Скачанный файл можно открыть в IINA из Finder."))
+                return
+            }
+            guard let applicationURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.colliderli.iina") else {
+                playbackController.reportPlayerState(.failed("IINA не найден. Установите IINA или выберите другой плеер в настройках."))
+                return
+            }
+            var components = URLComponents()
+            components.scheme = "iina"
+            components.host = "open"
+            components.queryItems = [URLQueryItem(name: "url", value: url.absoluteString),
+                                     URLQueryItem(name: "new_window", value: "1"),
+                                     URLQueryItem(name: "mpv_start", value: String(playbackStartPosition))]
+            guard let launchURL = components.url else { return }
+            let launchID = UUID()
+            iinaLaunchID = launchID
+            let accountID = libraryAccountID
+            Task {
+                do {
+                    _ = try await NSWorkspace.shared.open([launchURL], withApplicationAt: applicationURL, configuration: .init())
+                    guard iinaLaunchID == launchID, libraryAccountID == accountID else { return }
+                    playbackController.reportPlayerState(nil)
+                    bannerMessage = "Видео открыто в IINA. Прогресс IINA пока не сохраняется в KinoStream."
+                } catch {
+                    guard iinaLaunchID == launchID, libraryAccountID == accountID else { return }
+                    playbackController.reportPlayerState(.failed("Не удалось открыть IINA. Выберите другой плеер в настройках."))
+                }
+            }
+            return
+        }
         if playbackPlayer == .vlc {
             guard !activeServerRequiresAuthentication else {
                 playbackController.reportPlayerState(.failed("Для TorrServer с авторизацией выберите встроенный плеер в настройках."))

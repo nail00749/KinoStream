@@ -213,8 +213,15 @@ struct SettingsView: View {
                                  : "Для TorrServer с логином и паролем используйте встроенный плеер: VLC не получает данные авторизации.")
                                 .font(.system(size: 10))
                                 .foregroundStyle(model.activeServerRequiresAuthentication ? .orange : KinoPalette.muted)
-                            Text("Сохранение позиции и автоматическая отметка просмотра доступны во встроенном плеере.")
+                            Text("Позиция и отметка просмотра сохраняются через локальный HTTP-интерфейс VLC.")
                                 .font(.system(size: 10)).foregroundStyle(KinoPalette.muted)
+                        } else if model.playbackPlayer == .iina {
+                            Text("IINA должен быть установлен на этом Mac. Видео открывается с сохранённой позиции. Новые таймкоды и автопереход к следующей серии из IINA пока недоступны.")
+                                .font(.system(size: 10)).foregroundStyle(KinoPalette.muted)
+                            if model.activeServerRequiresAuthentication {
+                                Text("Для онлайн-просмотра с авторизацией выберите встроенный плеер. Скачанные файлы можно открыть в IINA из Finder.")
+                                    .font(.system(size: 10)).foregroundStyle(.orange)
+                            }
                         } else {
                             Text("Видео воспроизводится во встроенном плеере приложения.")
                                 .font(.system(size: 10)).foregroundStyle(KinoPalette.muted)

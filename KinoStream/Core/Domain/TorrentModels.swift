@@ -154,9 +154,16 @@ struct FavoriteTorrent: Identifiable, Hashable, Codable {
 enum PlaybackPlayer: String, CaseIterable, Hashable, Identifiable {
     case builtIn
     case vlc
+    case iina
 
     var id: String { rawValue }
-    var title: String { self == .builtIn ? "Встроенный" : "VLC" }
+    var title: String {
+        switch self {
+        case .builtIn: "Встроенный"
+        case .vlc: "VLC"
+        case .iina: "IINA"
+        }
+    }
 }
 
 enum TorrentSearchKind: String, Hashable, Codable {
